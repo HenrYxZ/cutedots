@@ -13,7 +13,7 @@
 
 from trajdata import RawFrame, RawData, Traj, TrajData
 import h5py
-from numpy import fromstring, dtype, float32
+import numpy as np
 
 # C3D
 #####
@@ -85,7 +85,7 @@ def readFrameFromArray(line):
         x = line[pos]
         y = line[pos + 1]
         z = line[pos + 2]
-    rf = RawFrame(fromstring(x+y+z), dtype = float32)
+    rf = RawFrame(np.array([x, y, z], dtype = np.float32))
     return rf
 
 # HDF5

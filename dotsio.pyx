@@ -13,7 +13,7 @@
 
 from trajdata import RawFrame, RawData, Traj, TrajData
 import h5py
-from numpy import fromstring, dtype, float32
+import numpy as np
 
 # C3D
 #####
@@ -82,10 +82,10 @@ def readFrameFromArray(line):
         # 5 is the index for x in the first marker, and the other 5 is for the
         # number of variables (x, y, z, id, name)
         pos = 5 + 5 * i
-        x = line[pos]
-        y = line[pos + 1]
-        z = line[pos + 2]
-    rf = RawFrame(fromstring(x+' '+y+' '+z), dtype = float32)
+        x = np.float32(line[pos])
+        y = np.float32(line[pos + 1])
+        z = np.float32(line[pos + 2])
+    rf = RawFrame(np.array([x, y, z]))
     return rf
 
 # HDF5
