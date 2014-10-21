@@ -32,6 +32,8 @@ def rawDataFromC3D(c3d, progress):
                 return
         try:
             rd.frames.append( RawFrame(c3d.data[i,:,:]) )
+            # if i == 20:
+                # print (c3d.data[i,:,:])
         except:
             print('Error appending frame %d of %d' % (i, numFrames))
             break
@@ -59,7 +61,7 @@ def rawDataFromCSV(filename, progress):
                 progress.setValue( int(100.0*i / framecount) )
             if progress.wasCanceled():
                 return
-            rd.frames.append(readFrameFromArray(line_array))
+            rd.frames.append(readFrameFromArray(line_array, i))
     progress.setValue(100)
     
     if (not framecount):
@@ -67,25 +69,36 @@ def rawDataFromCSV(filename, progress):
 
     return rd
     
-def readFrameFromArray(line):
+def readFrameFromArray(line, line_number):
     # This won't be used
     frame_id = int(line[1])
-    frame_timestamp = line[2]
+    frame_timestamp = float(line[2])
     rigidbody_count = int(line[3])
+    counter = 4
+    # read rigid bodies
+    # for counter in range(rigidbody_count):
+    counter = counter + rigidbody_count
 
     # This will
-    marker_count = int(line[4])
+    marker_count = int(line[counter])
     if (marker_count == 0):
         print ('Warning, markers not found in the frame')
+    data = np.zeros((marker_count, 4), dtype = np.float32)
+    counter = counter + 1
 
     for i in range(marker_count):
         # 5 is the index for x in the first marker, and the other 5 is for the
-        # number of variables (x, y, z, id, name)
-        pos = 5 + 5 * i
-        x = np.float32(line[pos])
-        y = np.float32(line[pos + 1])
-        z = np.float32(line[pos + 2])
-    rf = RawFrame(np.array([x, y, z]))
+        # number of variables (x, y, z, id, name) 
+        #x
+        data[i, 0] = np.float32(line[counter])
+        #y
+        data[i, 1] = np.float32(line[counter + 1])
+        #z
+        data[i, 2] = np.float32(line[counter + 2])
+        counter = counter + 5
+    # if line_number == 0:
+        # print (data)
+    rf = RawFrame(data)
     return rf
 
 # HDF5
