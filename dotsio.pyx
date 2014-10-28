@@ -48,7 +48,7 @@ def rawDataFromCSV(filename, progress):
     framecount = 120
     rd = RawData()
     rd.filename = filename
-    rd.framRate = 120.0
+    rd.frameRate = 120.0
 
     for line in pointsfile:
         line_array = line.split(',')
@@ -62,11 +62,11 @@ def rawDataFromCSV(filename, progress):
             if progress.wasCanceled():
                 return
             try:
-            rd.frames.append(readFrameFromArray(line_array, i))
+                rd.frames.append(readFrameFromArray(line_array, i))
             # if i == 20:
                 # print (c3d.data[i,:,:])
             except:
-               print('Error appending frame %d of %d' % (i, numFrames))
+               print('Error appending frame %d of %d' % (i, framecount))
                break
     progress.setValue(100)
     
@@ -86,6 +86,7 @@ def readFrameFromArray(line, line_number):
     counter = counter + rigidbody_count
 
     # This will
+    frame_scale = 1000
     marker_count = int(line[counter])
     if (marker_count == 0):
         print ('Warning, markers not found in the frame')
@@ -96,11 +97,11 @@ def readFrameFromArray(line, line_number):
         # 5 is the index for x in the first marker, and the other 5 is for the
         # number of variables (x, y, z, id, name) 
         #x
-        data[i, 0] = np.float32(line[counter])
+        data[i, 0] = np.float32(line[counter]) * frame_scale
         #y
-        data[i, 1] = np.float32(line[counter + 1])
+        data[i, 2] = np.float32(line[counter + 1]) * frame_scale
         #z
-        data[i, 2] = np.float32(line[counter + 2])
+        data[i, 1] = np.float32(line[counter + 2]) * frame_scale
         counter = counter + 5
     # if line_number == 0:
         # print (data)
