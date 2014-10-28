@@ -61,7 +61,13 @@ def rawDataFromCSV(filename, progress):
                 progress.setValue( int(100.0*i / framecount) )
             if progress.wasCanceled():
                 return
+            try:
             rd.frames.append(readFrameFromArray(line_array, i))
+            # if i == 20:
+                # print (c3d.data[i,:,:])
+            except:
+               print('Error appending frame %d of %d' % (i, numFrames))
+               break
     progress.setValue(100)
     
     if (not framecount):
