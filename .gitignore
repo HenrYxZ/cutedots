@@ -1,3 +1,13 @@
+# Cython generated files for cutedots
+c3dformat.c
+camstate.c
+dotsdisplay.c
+dotsio.c
+modelops.c
+modelstate.c
+preprocess.c
+trajdata.c
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
