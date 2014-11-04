@@ -44,31 +44,31 @@ def rawDataFromC3D(c3d, progress):
 #####
 
 def rawDataFromCSV(filename, progress):
-    pointsfile = open(filename, 'r')
-    framecount = 120
-    rd = RawData()
-    rd.filename = filename
-    rd.frameRate = 120.0
+    with open(filename) as pointsfile:
+        framecount = 120
+        rd = RawData()
+        rd.filename = filename
+        rd.frameRate = 120.0
 
-    for line in pointsfile:
-        line_array = line.split(',')
-        if (line_array[0] == 'info'):
-            if (line_array[1] == 'framecount'):
-                framecount = int(line_array[2])
-        if (line_array[0] == 'frame'):
-            i = len(rd.frames)
-            if i % 1000 == 0:
-                progress.setValue( int(100.0*i / framecount) )
-            if progress.wasCanceled():
-                return
-            try:
-                rd.frames.append(readFrameFromArray(line_array, i))
-            # if i == 20:
-                # print (c3d.data[i,:,:])
-            except:
-               print('Error appending frame %d of %d' % (i, framecount))
-               break
-    progress.setValue(100)
+        for line in pointsfile:
+            line_array = line.split(',')
+            if (line_array[0] == 'info'):
+                if (line_array[1] == 'framecount'):
+                    framecount = int(line_array[2])
+            if (line_array[0] == 'frame'):
+                i = len(rd.frames)
+                if i % 1000 == 0:
+                    progress.setValue( int(100.0*i / framecount) )
+                if progress.wasCanceled():
+                    return
+                try:
+                    rd.frames.append(readFrameFromArray(line_array, i))
+                # if i == 20:
+                    # print (c3d.data[i,:,:])
+                except:
+                   print('Error appending frame %d of %d' % (i, framecount))
+                   break
+        progress.setValue(100)
     
     if (not framecount):
         print ('Error frame count not found!')
