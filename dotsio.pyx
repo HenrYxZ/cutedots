@@ -86,7 +86,7 @@ def readFrameFromArray(line, line_number):
     counter = counter + rigidbody_count
 
     # This will
-    frame_scale = 1000
+    frame_scale = 800
     marker_count = int(line[counter])
     if (marker_count == 0):
         print ('Warning, markers not found in the frame')
