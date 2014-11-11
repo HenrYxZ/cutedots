@@ -45,10 +45,10 @@ def rawDataFromC3D(c3d, progress):
 
 def rawDataFromCSV(filename, progress):
     with open(filename) as pointsfile:
-        framecount = 120
+        framecount = 100
         rd = RawData()
         rd.filename = filename
-        rd.frameRate = 120.0
+        rd.frameRate = 100.0
 
         for line in pointsfile:
             line_array = line.split(',')
