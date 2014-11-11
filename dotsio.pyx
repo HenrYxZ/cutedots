@@ -101,7 +101,7 @@ def readFrameFromArray(line, line_number):
         #y
         data[i, 2] = np.float32(line[counter + 1]) * frame_scale
         #z
-        data[i, 1] = np.float32(line[counter + 2]) * frame_scale
+        data[i, 1] = np.float32(line[counter + 2]) * -1 * frame_scale
         counter = counter + 5
     # if line_number == 0:
         # print (data)
