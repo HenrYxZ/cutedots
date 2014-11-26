@@ -433,13 +433,12 @@ class CuteDotsMainWindow(QtGui.QMainWindow):
         # Menu bar
         menubar = self.menuBar()
         self.mkMenu(menubar, '&File', [loadAction, importC3DAction, importCSVAction, 
-            None, saveAction, saveAsAction, saveSeqAction, None, exitAction])
+            None, saveAction, saveAsAction, saveSeqAction, None, exitAction, exitNoSaveAction])
         self.mkMenu(menubar, '&Operations', [rotateAction, swapAction, guessAction, None,
             averageTrajsAction, fillSmallGapsAction, fillAllGapsAction, None,
             cutRightAction, cutLeftAction, None, removeUnassignedAction, None, sortAction])
         self.mkMenu(menubar, '&Analysis', [plotContAction, plotEnergyAction, plotSpeedAction,
             lengthHistAction])
-        self.mkMenu(menubar, 'Other', [exitNoSaveAction])
         self.mkMenu(menubar, '&Help', [aboutAction])
 
     # Actions
