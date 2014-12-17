@@ -142,8 +142,6 @@ def rawDataFromCSV2(filename, progress):
     return rd
     
 def readFrameFromArray2(line, line_number):
-    # if (line_number == 0):
-        # print (line)
     # This won't be used
     frame_id = int(line[0])
     frame_timestamp = float(line[1])
@@ -157,16 +155,11 @@ def readFrameFromArray2(line, line_number):
     for i in range(start, len(line)-1):
         if (line[i]):
             points.append(i)
-    # if (line_number == 0):
-        # print (points)
     data = np.zeros((len(points)/3, 4), dtype = np.float32)
     # divided by three because each marker has x, y, z
     for i in range(points[0], points[len(points)-1], 3):
         # if this cell is not empty
         if(line[i]):
-            # print ("line: " + line[i])
-            # print ("i: " + str(i))
-            # print ("marker_count: " + str(marker_count))
             # read the next 3 elements
             #x
             data[marker_count, 0] = np.float32(line[i]) * frame_scale
@@ -175,8 +168,6 @@ def readFrameFromArray2(line, line_number):
             #z
             data[marker_count, 1] = np.float32(line[i + 2]) * -1 * frame_scale
             marker_count = marker_count + 1
-    # if (line_number == 0):
-        # print ("data: \n" + str(data))
     rf = RawFrame(data)
     return rf
 
