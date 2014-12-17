@@ -108,6 +108,79 @@ def readFrameFromArray(line, line_number):
     rf = RawFrame(data)
     return rf
 
+# CSV 2
+#######
+
+def rawDataFromCSV2(filename, progress):
+    with open(filename) as pointsfile:
+        framecount = 100
+        rd = RawData()
+        rd.filename = filename
+        rd.frameRate = 100.0
+        counter = 0
+
+        for line in pointsfile:
+            counter = counter + 1
+            # Line with the information
+            if (counter == 1):
+                line_array = line.split(',')
+                framecount = int(line_array[11])
+            # Line containing a frame
+            if (counter > 7):
+                line_array = line.split(',')
+                i = len(rd.frames)
+                if i % 1000 == 0:
+                    progress.setValue( int(100.0*i / framecount) )
+                if progress.wasCanceled():
+                    return
+                rd.frames.append(readFrameFromArray2(line_array, i))
+        progress.setValue(100)
+    
+    if (not framecount):
+        print ('Error frame count not found!')
+
+    return rd
+    
+def readFrameFromArray2(line, line_number):
+    # if (line_number == 0):
+        # print (line)
+    # This won't be used
+    frame_id = int(line[0])
+    frame_timestamp = float(line[1])
+
+    # This will
+    marker_count = 0
+    points = []
+    frame_scale = 800
+    start = 2
+    # read the indices in the array of the markers present in this frame
+    for i in range(start, len(line)-1):
+        if (line[i]):
+            points.append(i)
+    # if (line_number == 0):
+        # print (points)
+    data = np.zeros((len(points)/3, 4), dtype = np.float32)
+    # divided by three because each marker has x, y, z
+    for i in range(points[0], points[len(points)-1], 3):
+        # if this cell is not empty
+        if(line[i]):
+            # print ("line: " + line[i])
+            # print ("i: " + str(i))
+            # print ("marker_count: " + str(marker_count))
+            # read the next 3 elements
+            #x
+            data[marker_count, 0] = np.float32(line[i]) * frame_scale
+            #y
+            data[marker_count, 2] = np.float32(line[i + 1]) * frame_scale
+            #z
+            data[marker_count, 1] = np.float32(line[i + 2]) * -1 * frame_scale
+            marker_count = marker_count + 1
+    # if (line_number == 0):
+        # print ("data: \n" + str(data))
+    rf = RawFrame(data)
+    return rf
+
+
 # HDF5
 ######
 

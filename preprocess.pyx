@@ -65,4 +65,25 @@ def ppCSV(filename, progress):
     dotsio.trajDataSaveH5(td, progress)
     return td.filename
 
-
+def ppCSV2(filename, progress):
+    if progress.wasCanceled():
+        return
+    # Read raw data
+    progress.setLabelText( "Extracting non-trajectorized data..." )
+    rd = dotsio.rawDataFromCSV2(filename, progress)
+    if progress.wasCanceled():
+        return
+    # Remove duplicates
+    progress.setLabelText( "Merging close points..." )
+    rd.joinClosePoints(progress)
+    if progress.wasCanceled():
+        return
+    # Initial trajectorization
+    progress.setLabelText( "Initial trajectorization..." )
+    td = dotsio.trajDataFromRawData(rd, progress)
+    if progress.wasCanceled():
+        return
+    # Writing
+    progress.setLabelText( "Saving trajectorized data..." )
+    dotsio.trajDataSaveH5(td, progress)
+    return td.filename
