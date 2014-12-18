@@ -75,11 +75,11 @@ def rawDataFromCSV(filename, progress):
 
     return rd
     
-def readFrameFromArray(line, line_number):
+def readFrameFromArray(line_array, line_number):
     # This won't be used
-    frame_id = int(line[1])
-    frame_timestamp = float(line[2])
-    rigidbody_count = int(line[3])
+    frame_id = int(line_array[1])
+    frame_timestamp = float(line_array[2])
+    rigidbody_count = int(line_array[3])
     counter = 4
     # read rigid bodies
     # for counter in range(rigidbody_count):
@@ -87,7 +87,7 @@ def readFrameFromArray(line, line_number):
 
     # This will
     frame_scale = 800
-    marker_count = int(line[counter])
+    marker_count = int(line_array[counter])
     if (marker_count == 0):
         print ('Warning, markers not found in the frame')
     data = np.zeros((marker_count, 4), dtype = np.float32)
@@ -97,11 +97,11 @@ def readFrameFromArray(line, line_number):
         # 5 is the index for x in the first marker, and the other 5 is for the
         # number of variables (x, y, z, id, name) 
         #x
-        data[i, 0] = np.float32(line[counter]) * frame_scale
+        data[i, 0] = np.float32(line_array[counter]) * frame_scale
         #y
-        data[i, 2] = np.float32(line[counter + 1]) * frame_scale
+        data[i, 2] = np.float32(line_array[counter + 1]) * frame_scale
         #z
-        data[i, 1] = np.float32(line[counter + 2]) * -1 * frame_scale
+        data[i, 1] = np.float32(line_array[counter + 2]) * -1 * frame_scale
         counter = counter + 5
     # if line_number == 0:
         # print (data)
@@ -141,10 +141,16 @@ def rawDataFromCSV2(filename, progress):
 
     return rd
     
-def readFrameFromArray2(line, line_number):
+def readFrameFromArray2(line_array, line_number):
+    '''
+    - line_array is an array that in each cell stores a string float or an empty
+     string.
+    - points is an int array that stores the indices in line_array that are floats
+    - 
+    '''
     # This won't be used
-    frame_id = int(line[0])
-    frame_timestamp = float(line[1])
+    frame_id = int(line_array[0])
+    frame_timestamp = float(line_array[1])
 
     # This will
     marker_count = 0
@@ -152,22 +158,29 @@ def readFrameFromArray2(line, line_number):
     frame_scale = 800
     start = 2
     # read the indices in the array of the markers present in this frame
-    for i in range(start, len(line)-1):
-        if (line[i]):
+    for i in range(start, len(line_array)):
+        if (line_array[i] and line_array[i] != "\r\n"):
             points.append(i)
     data = np.zeros((len(points)/3, 4), dtype = np.float32)
+    # print ("frame number: " + str(line_number))
+    # print ("line_array: " + str(line_array))
+    # print ("points: " +  str(points))
     # divided by three because each marker has x, y, z
-    for i in range(points[0], points[len(points)-1], 3):
-        # if this cell is not empty
-        if(line[i]):
-            # read the next 3 elements
-            #x
-            data[marker_count, 0] = np.float32(line[i]) * frame_scale
-            #y
-            data[marker_count, 2] = np.float32(line[i + 1]) * frame_scale
-            #z
-            data[marker_count, 1] = np.float32(line[i + 2]) * -1 * frame_scale
-            marker_count = marker_count + 1
+    # iteration on triples (x, y, z) of every marker
+    for i in range(0, len(points), 3):
+        # read the next 3 elements
+        # if (line_number == 44352):
+        # print ("i: " + str(i))
+        # print ("line_array[i]: " + line_array[points[i]])
+        # print ("marker_count: " + str(marker_count))
+        #x
+        data[marker_count, 0] = np.float32(line_array[points[i]]) * frame_scale
+        #y
+        data[marker_count, 2] = np.float32(line_array[points[i + 1]]) * frame_scale
+        #z
+        data[marker_count, 1] = np.float32(line_array[points[i + 2]]) * -1 * frame_scale
+        marker_count = marker_count + 1
+    # print ("data: " + str(data))
     rf = RawFrame(data)
     return rf
 
